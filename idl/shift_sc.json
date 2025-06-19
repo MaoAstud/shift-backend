@@ -1,0 +1,381 @@
+{
+  "address": "BHVuEoVho8MgkQ937DG7HhkKy6gT1jo5xcmhA8WAJPXt",
+  "metadata": {
+    "name": "shift_sc",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "cast_vote",
+      "docs": [
+        "Emite un voto quemando el NFT asociado. No se verifica ni se almacena la lista de votantes on‐chain."
+      ],
+      "discriminator": [
+        20,
+        212,
+        15,
+        189,
+        69,
+        180,
+        69,
+        151
+      ],
+      "accounts": [
+        {
+          "name": "campaign",
+          "docs": [
+            "La cuenta Campaign (PDA) donde se almacenan los votos"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  109,
+                  112,
+                  97,
+                  105,
+                  103,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "campaign.creator",
+                "account": "Campaign"
+              },
+              {
+                "kind": "account",
+                "path": "campaign.title",
+                "account": "Campaign"
+              }
+            ]
+          }
+        },
+        {
+          "name": "voter",
+          "docs": [
+            "Firma del votante"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "voter_token_account",
+          "docs": [
+            "Token account asociado del votante para el mint del NFT autorizado"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "voter"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "nft_mint",
+          "docs": [
+            "Mint del NFT (debe coincidir con campaign.nft_mint y estar mutable para el burn)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "Programas de token y associated token"
+          ],
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "option_index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "create_campaign",
+      "docs": [
+        "Crea una nueva campaña. Ya no se almacena la lista de votantes dentro de la cuenta."
+      ],
+      "discriminator": [
+        111,
+        131,
+        187,
+        98,
+        160,
+        193,
+        114,
+        244
+      ],
+      "accounts": [
+        {
+          "name": "campaign",
+          "docs": [
+            "Se inicializa la cuenta PDA de Campaign"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  109,
+                  112,
+                  97,
+                  105,
+                  103,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              },
+              {
+                "kind": "arg",
+                "path": "title"
+              }
+            ]
+          }
+        },
+        {
+          "name": "creator",
+          "docs": [
+            "Firma del creador de la campaña"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "nft_mint",
+          "docs": [
+            "Mint del NFT que autoriza a votar. Se usará luego en cast_vote para quemar."
+          ]
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "Programas del sistema y SPL"
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "options",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "start_time",
+          "type": "i64"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Campaign",
+      "discriminator": [
+        50,
+        40,
+        49,
+        11,
+        157,
+        220,
+        229,
+        192
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "CampaignNotStarted",
+      "msg": "La campaña aún no ha comenzado."
+    },
+    {
+      "code": 6001,
+      "name": "CampaignEnded",
+      "msg": "La campaña ya finalizó."
+    },
+    {
+      "code": 6002,
+      "name": "InvalidOption",
+      "msg": "Opción inválida."
+    },
+    {
+      "code": 6003,
+      "name": "InvalidOptions",
+      "msg": "Se requieren al menos dos opciones."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidTimestamps",
+      "msg": "Timestamps inválidos."
+    },
+    {
+      "code": 6005,
+      "name": "InsufficientTokens",
+      "msg": "No tienes suficientes tokens para votar."
+    },
+    {
+      "code": 6006,
+      "name": "InvalidNFTMint",
+      "msg": "El NFT no corresponde al mint autorizado para esta campaña."
+    }
+  ],
+  "types": [
+    {
+      "name": "Campaign",
+      "docs": [
+        "Información almacenada on‐chain sobre la campaña.",
+        "Ya no existe el campo `voters: Vec<Pubkey>`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "options",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "votes",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "total_votes",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}
