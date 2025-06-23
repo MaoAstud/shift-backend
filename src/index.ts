@@ -25,7 +25,7 @@ async function main() {
     updateVoteResults().catch(err => {
       console.error("Error en updateVoteResults:", err);
     });
-  }, 30 * 1000); // 60 000 ms = 1 minuto
+  }, 60 * 1000); // 60 000 ms = 1 minuto
   console.log("⏱️  Tarea de actualización de resultados iniciada (cada 1min)");
 
   // → 3) Levantar servidor
