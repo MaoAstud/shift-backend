@@ -39,28 +39,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = require("body-parser");
 const dotenv_1 = __importDefault(require("dotenv"));
+const cors_1 = __importDefault(require("cors"));
 const registerVoterRoute = __importStar(require("./routes/registerVoter"));
-const resultsRoute = __importStar(require("./routes/results"));
+const createMintRoute = __importStar(require("./routes/createMint"));
 const solana_listener_1 = require("./solana-listener");
 dotenv_1.default.config();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
 async function main() {
     const app = (0, express_1.default)();
     app.use((0, body_parser_1.json)());
+    app.use((0, cors_1.default)());
     // → 1) Rutas del API
     app.use("/api/register-voter", registerVoterRoute.router);
-    app.use("/api/results", resultsRoute.router);
-    // → 2) Iniciar listener on‐chain (en background)
-    (0, solana_listener_1.startSolanaListener)().catch((err) => {
-        console.error("Error en el listener on‐chain:", err);
-        process.exit(1);
-    });
+    app.use("/api/create-mint", createMintRoute.router);
+    // → 2) Tarea periódica: cada minuto
+    setInterval(() => {
+        (0, solana_listener_1.updateVoteResults)().catch(err => {
+            console.error("Error en updateVoteResults:", err);
+        });
+    }, 60 * 1000); // 60 000 ms = 1 minuto
+    console.log("⏱️  Tarea de actualización de resultados iniciada (cada 1min)");
     // → 3) Levantar servidor
     app.listen(PORT, () => {
         console.log(`🚀 Servidor API corriendo en http://localhost:${PORT}`);
     });
 }
-main().catch((err) => {
+main().catch(err => {
     console.error(err);
     process.exit(1);
 });
